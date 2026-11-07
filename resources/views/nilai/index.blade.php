@@ -1,0 +1,10 @@
+@extends('layouts.app')
+@section('title', 'Data Nilai')
+@section('content')
+<div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4"><div><h1 class="h3 fw-bold mb-1">Nilai Mahasiswa</h1><p class="text-muted mb-0">Kelola dan tinjau hasil akademik mahasiswa.</p></div><a href="{{ route('nilai.create') }}" class="btn btn-utama">+ Input nilai</a></div>
+<div class="card border-0 shadow-sm"><div class="card-body border-bottom"><form method="GET" class="row g-2"><div class="col-sm-9"><input class="form-control" name="search" value="{{ request('search') }}" placeholder="Cari mahasiswa, NIM, atau mata kuliah"></div><div class="col-sm-3 d-grid"><button class="btn btn-outline-primary">Cari</button></div></form></div>
+<div class="table-responsive"><table class="table table-hover mb-0"><thead class="table-light"><tr><th>Mahasiswa</th><th>Mata kuliah</th><th>Angka</th><th>Huruf</th><th class="text-end">Aksi</th></tr></thead><tbody>
+@forelse($nilai as $item)<tr><td><div class="fw-semibold">{{ $item->mahasiswa->nama }}</div><small class="text-muted">{{ $item->mahasiswa->nim }}</small></td><td>{{ $item->matakuliah->nama_mk }} <small class="text-muted">({{ $item->matakuliah->kode_mk }})</small></td><td>{{ $item->nilai_angka }}</td><td><span class="badge text-bg-success">{{ $item->nilai_huruf }}</span></td><td class="text-end text-nowrap"><a class="btn btn-sm btn-outline-primary" href="{{ route('nilai.show', $item) }}">Detail</a> <a class="btn btn-sm btn-outline-secondary" href="{{ route('nilai.edit', $item) }}">Ubah</a>@if(auth()->user()->role->nama_role === 'Admin') <form class="d-inline" action="{{ route('nilai.destroy', $item) }}" method="POST" onsubmit="return confirm('Hapus data nilai ini?')">@csrf @method('DELETE')<button class="btn btn-sm btn-outline-danger">Hapus</button></form>@endif</td></tr>
+@empty<tr><td colspan="5" class="text-center py-4 text-muted">Belum ada nilai yang cocok.</td></tr>@endforelse
+</tbody></table></div>@if($nilai->hasPages())<div class="card-body">{{ $nilai->links() }}</div>@endif</div>
+@endsection
